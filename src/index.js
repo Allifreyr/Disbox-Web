@@ -22,14 +22,14 @@ function HomeOrApp() {
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter basename="/web">
-  <Routes>
-    <Route path="/" element={<App />} />
-    <Route path="" element={<HomeOrApp />} />
-    <Route path="home" element={<Home />} />
-    <Route path="setup" element={<Setup />} />
-    <Route path="file" element={<File />} />
-  </Routes>
-</BrowserRouter>
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="" element={<HomeOrApp />} />
+        <Route path="home" element={<Home />} />
+        <Route path="setup" element={<Setup />} />
+        <Route path="file" element={<File />} />
+      </Routes>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );

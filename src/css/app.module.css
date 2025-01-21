@@ -139,3 +139,122 @@
   height: 20px;
   background-color: #4CAF50;
 }
+
+/* Setup Container */
+.setup-container {
+  background-color: #fcfcfc;
+  margin: 2rem auto;
+  padding: 3rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Title */
+.setup-title {
+  font-size: 4rem;
+  text-align: center;
+  margin: 0;
+  color: #333333;
+}
+
+/* Subtitle */
+.setup-subtitle {
+  font-size: 1.8rem;
+  text-align: center;
+  margin: 1rem 0 2rem;
+  color: #555555;
+}
+
+/* Instructions */
+.instructions {
+  font-size: 1.4rem;
+  line-height: 1.8;
+  color: #444444;
+}
+
+/* Instruction Item */
+.instruction-item {
+  margin-bottom: 1.5rem;
+}
+
+/* Instruction Number */
+.instruction-number {
+  color: #007bff;
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+/* Webhook Input */
+.webhook-input {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.6rem;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+  margin-top: 1.5rem;
+}
+
+/* Continue Button */
+.continue-button {
+  width: 100%;
+  padding: 1.2rem;
+  font-size: 1.6rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  margin-top: 2rem;
+  transition: background-color 0.3s ease;
+}
+
+.continue-button:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+
+  .setup-title {
+    font-size: 3rem;
+  }
+
+  .setup-subtitle {
+    font-size: 1.5rem;
+  }
+
+  .instructions {
+    font-size: 1.2rem;
+  }
+
+  .webhook-input {
+    font-size: 1.4rem;
+  }
+
+  .continue-button {
+    font-size: 1.4rem;
+  }
+}
+
+@media (min-width: 1600px) {
+
+
+  .setup-title {
+    font-size: 4.5rem;
+  }
+
+  .setup-subtitle {
+    font-size: 2rem;
+  }
+
+  .instructions {
+    font-size: 1.6rem;
+  }
+
+  .webhook-input {
+    font-size: 1.8rem;
+  }
+
+  .continue-button {
+    font-size: 1.8rem;
+  }
+}
