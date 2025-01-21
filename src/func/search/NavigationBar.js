@@ -13,19 +13,12 @@ function NavigationBar({ theme, setTheme, totalStorageSize }) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  // function formatSize(bytes) {
-  //   if (bytes === 0) return "0 Go";
-
-  //   const k = 1024;
-  //   const dm = 2; // Nombre de chiffres après la virgule
-  //   const sizes = ["octets", "Ko", "Mo", "Go", "To"];
-  //   const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-  //   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-  // }
-
+  // Safe file size formatting
   function formatSize(bytes) {
-    if (bytes === 0) return "0 Go";
+    // Ensure it's a valid number
+    if (typeof bytes !== 'number' || isNaN(bytes)) {
+      return "0 B";  // Return a default size if invalid
+    }
     return filesize(bytes, { base: 2 });
   }
 
