@@ -3,19 +3,19 @@ import React, { useEffect, useState } from "react";
 
 import {
   CssBaseline,
-  IconButton,
   LinearProgress,
-  linearProgressClasses,
-  Snackbar,
-  Typography,
+  linearProgressClasses
 } from "@mui/material";
 import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
-import { Box } from "@mui/system";
-import { DataGrid, GridCloseIcon } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
+import { filesize } from 'filesize';
+import pako from "pako";
 import { Button as BsButton } from "react-bootstrap";
+import Wave from "react-wavify";
 import urlJoin from "url-join";
 import styles from "./css/app.module.css";
 import buildColumns from "./func/columns/columns.js";
+import ExtensionDialog from "./func/extention/ExtensionDialog.js";
 import DisboxFileManager, {
   FILE_DELIMITER,
 } from "./func/file/disbox-file-manager.js";
@@ -23,20 +23,29 @@ import {
   getAvailableFileName,
   pickLocationAsWritable,
 } from "./func/file/file-utils.js";
-import NavigationBar from "./func/search/NavigationBar.js";
 import PathParts from "./func/file/PathParts.js";
 import SearchBar from "./func/search/SearchBar.js";
-import pako from "pako";
-import ExtensionDialog from "./func/extention/ExtensionDialog.js";
+import ThemeSwitch from "./func/theme/ThemeSwitch.js";
+import NavigationBar from "./NavigationBar.js";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFileCirclePlus,
   faFolderPlus,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+
+  // Safe file size formatting
+  function formatSize(bytes) {
+    // Ensure it's a valid number
+    if (typeof bytes !== 'number' || isNaN(bytes)) {
+      return "0 B";  // Return a default size if invalid
+    }
+    return filesize(bytes, { base: 2 });
+  }
 
 const darkTheme = createTheme({
   palette: {
@@ -435,29 +444,30 @@ function App() {
 
   return (
     <div
-      style={{ height: "87vh" }}
+      style={{
+        height: "100vh", 
+        overflow: "auto", // Enables scrolling if the content overflows vertically
+      }}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
+      <NavigationBar
+        theme={theme}
+        setTheme={setTheme}
+        totalStorageSize={totalStorageSize}
+        className={styles.icone}
+      />
+      
       <ThemeProvider theme={theme ? darkTheme : lightTheme}>
         <CssBaseline />
         <ExtensionDialog />
         <ToastContainer position="top-right" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-
-        <div
-          style={{ height: "94%" }}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-        >
+      
+        <div style={{ height: "70%" }} onDragOver={handleDragOver} onDrop={handleDrop}>
           <div className={styles.navbar}>
             <div className={styles.NavSearch}>
+              <ThemeSwitch theme={theme} setTheme={setTheme} />
               <div className="buttonContainer">
-                <NavigationBar
-                  theme={theme}
-                  setTheme={setTheme}
-                  totalStorageSize={totalStorageSize}
-                  className={styles.icone}
-                />
                 <input
                   id="uploadFile"
                   type="file"
@@ -468,15 +478,16 @@ function App() {
                 <BsButton
                   variant="outline-primary"
                   className={styles.navbtn}
-                  onClick={() => {
-                    document.getElementById("uploadFile").click();
-                  }}
+                  onClick={() => document.getElementById("uploadFile").click()}
                   disabled={currentAction !== "" || path === null}
                 >
                   <FontAwesomeIcon
                     icon={faFileCirclePlus}
                     size="lg"
                     className={styles.icone}
+                    style={{
+                      color: theme ? "#fff" : "#333",  // White for dark mode, dark gray for light mode
+                    }}
                   />
                 </BsButton>
               </div>
@@ -491,23 +502,23 @@ function App() {
                     icon={faFolderPlus}
                     size="lg"
                     className={styles.icone}
+                    style={{
+                      color: theme ? "#fff" : "#333",  // White for dark mode, dark gray for light mode
+                    }}
                   />
                 </BsButton>
               </div>
               <div className={styles.Search}>
                 <SearchBar
                   fileManager={fileManager}
+                  showDirectory={showDirectory}
                   files={true}
                   directories={true}
                   advanced={true}
                   rows={rows}
                   search={true}
-                  onOptionsChanged={(options) => {
-                    setSearchOptions(options);
-                  }}
-                  onChange={(value) => {
-                    setSearchValue(value);
-                  }}
+                  onOptionsChanged={(options) => setSearchOptions(options)}
+                  onChange={(value) => setSearchValue(value)}
                   onSelect={showSearchResults}
                   onEnter={showSearchResults}
                   placeholder="Search for files, directories, extensions (e.g. ext:png)"
@@ -516,21 +527,11 @@ function App() {
             </div>
           </div>
 
-          <PathParts
-            path={path}
-            fileManager={fileManager}
-            showDirectory={showDirectory}
-          />
-          <div style={{ height: "100%", width: "100%" }}>
+          <PathParts path={path} fileManager={fileManager} showDirectory={showDirectory} />
+          <div style={{ height: "82%", width: "100%" }}>
             <DataGrid
               rows={rows}
-              columns={buildColumns(
-                fileManager,
-                currentAction,
-                onShareFileClick,
-                onDownloadFileClick,
-                onDeleteFileClick
-              )}
+              columns={buildColumns(fileManager, currentAction, onShareFileClick, onDownloadFileClick, onDeleteFileClick)}
               hideFooter={false}
               checkboxSelection
               disableSelectionOnClick
@@ -542,7 +543,63 @@ function App() {
           </div>
         </div>
       </ThemeProvider>
+
+      {/* This part has been adjusted */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "250px", // Ensure enough height for scrolling when needed
+        }}
+      >
+        <div
+          style={{
+            width: "200px",
+            height: "200px",
+            borderRadius: "50%",
+            overflow: "hidden",
+            backgroundColor: "#E0F7FA",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Wave
+            fill="url(#gradient)"
+            paused={false}
+            style={{
+              position: "relative",
+              bottom: "-15%",
+              left: "50%",
+              transform: "translateX(-50%)",
+            }}
+            options={{
+              height: 20,
+              amplitude: 35,
+              speed: 0.15,
+              points: 3,
+            }}
+          >
+            <defs>
+              <linearGradient id="gradient" gradientTransform="rotate(90)">
+                <stop offset="10%" stopColor="#40acda" />
+                <stop offset="90%" stopColor="#203281" />
+              </linearGradient>
+            </defs>
+          </Wave>
+        </div>
+        <h6 style={{
+            color: theme ? "#fff" : "#000",  // White for dark mode, black for light mode
+            marginTop: "10px"
+          }}
+        >
+          You have stored: {formatSize(totalStorageSize)}
+        </h6>
+      </div>
     </div>
+
   );
 }
 

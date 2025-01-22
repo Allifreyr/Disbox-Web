@@ -1,7 +1,7 @@
 import { Autocomplete, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 
-function SearchBar({ fileManager, files = true, directories = true, rows,
+function SearchBar({ fileManager, showDirectory, files = true, directories = true, rows,
      advanced = true, search = true, placeholder = "Search", onSelect, onEnter, onOptionsChanged, onChange }) {
 
     const [baseOptions, setBaseOptions] = useState(new Set());
@@ -45,10 +45,11 @@ function SearchBar({ fileManager, files = true, directories = true, rows,
 
     }, [rows]);
 
-
     const setAutoCompleteOptions = (event, value) => {
+        value = value ?? "";    // So this is never null
+    
         let newOptions = [];
-        const parts = value.split(" ");
+        const parts = value.split(" "); // This line is safe now since value is guaranteed to be a non-null string
         const advancedParts = [];
         parts.forEach(part => {
             if (part.startsWith("ext:")) {
@@ -108,6 +109,11 @@ function SearchBar({ fileManager, files = true, directories = true, rows,
         onKeyDown={(event) => {
             if (event.key === "Enter" && onEnter) {
                 onEnter();
+            }
+            // This is so that when the user presses enter when the search is empty, then we go "home" to the default view
+            if(event.target.value == "")
+            {
+                showDirectory("");
             }
         }}
         options={options}

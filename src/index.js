@@ -9,7 +9,7 @@ import File from './func/file/File';
 import Home from './Home';
 import './index.css';
 import reportWebVitals from './func/report/reportWebVitals';
-import Setup from './func/setup/Setup';
+import Setup from './Setup';
 
 function HomeOrApp() {
   if (localStorage.getItem("webhookUrl") === null) {

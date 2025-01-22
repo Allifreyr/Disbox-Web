@@ -221,6 +221,7 @@ class DisboxFileManager {
 
     getFile(path, copy = true) {
         let file = this.fileTree;
+        path = path ?? "";  // So that the path is never null
         let pathParts = path.split(FILE_DELIMITER);
         pathParts.shift(); // remove first empty part
         for (let i = 0; i < pathParts.length; i++) {

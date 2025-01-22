@@ -91,10 +91,7 @@ function File() {
     (searchParams.get("attachmentUrls") !== null || locationData.hash !== "") &&
     searchParams.get("size") !== null ? (
     <div>
-      <Helmet>
-        <title>{searchParams.get("name")}</title>
-        <meta name="description" content="Shared from Disbox" />
-      </Helmet>
+
       <NavigationBar />
       <div className={styles.App + " " + styles["App-header"]}>
         <div className={styles["file-container"]}>
