@@ -21,7 +21,7 @@
 | Multi Upload               | ✅ Interface Only         | Send multiple files at once           | -                                                     |
 | Multi Cloud                | ✅ Interface Only         | Add as many clouds as you like        | -                                                     |
 | New UI                     | ✅ Interface Only         | A better interface                    | -                                                     |
-| Play/Stream videos         | 🚧                        | -                                     | -                                                     |
+| Play/Stream videos         | 🚧 In Progress            | -                                     | -                                                     |
 | Move                       | ❌                        | -                                     | `moveFile(path, newParentPath)` (Untested)            |
 | Edit files                 | ❌                        | -                                     | `uploadFile(path, file, onProgress)` (Untested)       |
 | Delete non-empty folders   | ❌                        | -                                     | -                                                     |
